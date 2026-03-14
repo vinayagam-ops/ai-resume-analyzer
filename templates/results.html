@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer - Results</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .job-desc {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .job-desc strong { color: #555; }
+        
+        /* ✅ STEP 8: Top Candidate Banner */
+        .top-candidate-banner {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            text-align: center;
+            border: 3px solid #e67e22;
+            animation: pulse 2s infinite;
+        }
+        .top-candidate-banner h2 {
+            color: #2c3e50;
+            font-size: 1.4rem;
+        }
+        .top-candidate-banner .filename {
+            font-weight: bold;
+            color: #d35400;
+            font-size: 1.2rem;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(230, 126, 34, 0); }
+        }
+        
+        .result-card {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .result-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .rank-badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .filename {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        .final-score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #27ae60;
+        }
+        
+        /* ✅ STEP 7: Visual Score Bar */
+        .score-bar-container {
+            margin: 15px 0;
+        }
+        .score-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .score-bar {
+            height: 12px;
+            background: #ecf0f1;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+        }
+        .score-bar-fill.low { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+        .score-bar-fill.medium { background: linear-gradient(90deg, #f39c12, #e67e22); }
+        .score-bar-fill.high { background: linear-gradient(90deg, #27ae60, #2ecc71); }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+        }
+        .metric {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .metric-value {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        .metric-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .skills-list {
+            margin-top: 12px;
+        }
+        .skills-list strong {
+            color: #555;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .skill-tag {
+            display: inline-block;
+            background: #e8f4fd;
+            color: #2980b9;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin: 3px;
+            border: 1px solid #bdc3c7;
+        }
+        .no-skills {
+            color: #95a5a6;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        .back-link:hover {
+            background: #5568d3;
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #c62828;
+        }
+        
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .result-header { flex-direction: column; align-items: flex-start; }
+            .metrics { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 AI Resume Analyzer Results</h1>
+        
+        {% if error %}
+        <div class="error">⚠️ {{ error }}</div>
+        {% endif %}
+        
+        <div class="job-desc">
+            <strong>Job Description:</strong> {{ job_desc }}
+            {% if full_job_desc != job_desc %}
+            <br><small style="color:#888"><em>(Click to view full description in form)</em></small>
+            {% endif %}
+        </div>
+        
+        <!-- ✅ STEP 8: Top Candidate Banner -->
+        {% if best_resume %}
+        <div class="top-candidate-banner">
+            <h2>🏆 Top Candidate</h2>
+            <p class="filename">{{ best_resume }}</p>
+            <p style="margin-top:8px;font-size:0.95rem;color:#555">
+                Highest overall match based on semantic similarity + skills
+            </p>
+        </div>
+        {% endif %}
+        
+        <h3 style="margin:25px 0 15px;color:#333">Ranked Results</h3>
+        
+        {% for result in results %}
+        <div class="result-card">
+            <div class="result-header">
+                <span class="rank-badge">#{{ loop.index }}</span>
+                <span class="filename">{{ result.filename }}</span>
+                <span class="final-score">{{ result.final_score }}/100</span>
+            </div>
+            
+            <!-- ✅ STEP 7: Visual Score Bar -->
+            <div class="score-bar-container">
+                <div class="score-bar-label">
+                    <span>Match Quality</span>
+                    <span>{{ result.final_score }}%</span>
+                </div>
+                <div class="score-bar">
+                    <div class="score-bar-fill 
+                        {% if result.final_score < 40 %}low
+                        {% elif result.final_score < 70 %}medium
+                        {% else %}high{% endif %}" 
+                         style="width: {{ result.final_score }}%">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value">{{ result.cosine_score }}%</div>
+                    <div class="metric-label">Semantic Match</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">{{ result.skill_matches }}</div>
+                    <div class="metric-label">Skills Found</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">
+                        {{ (result.cosine_score * 0.7 + result.skill_matches * 3) | round(1) }}
+                    </div>
+                    <div class="metric-label">Weighted Score</div>
+                </div>
+            </div>
+            
+            <!-- ✅ STEP 6: Display Matched Skills -->
+            <div class="skills-list">
+                <strong>Matched Skills:</strong>
+                {% if result.skills %}
+                    {% for skill in result.skills %}
+                    <span class="skill-tag">✓ {{ skill }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span class="no-skills">No predefined skills matched</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        
+        <a href="/" class="back-link">← Analyze More Resumes</a>
+    </div>
+</body>
+</html>
