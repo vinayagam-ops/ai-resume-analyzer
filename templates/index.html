@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            background: #f8f9ff;
+            cursor: pointer;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c33;
+        }
+        
+        .info-box {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .skill-tag {
+            background: white;
+            color: #667eea;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI Resume Analyzer</h1>
+        <p class="subtitle">Advanced semantic screening powered by AI</p>
+        
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+        
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="job_description">Job Description *</label>
+                <textarea 
+                    id="job_description" 
+                    name="job_description" 
+                    rows="6" 
+                    placeholder="Paste the complete job description here including requirements, responsibilities, and required skills..."
+                    required
+                    minlength="20"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="resumes">Upload Resume PDFs *</label>
+                <input 
+                    type="file" 
+                    id="resumes" 
+                    name="resumes" 
+                    accept=".pdf" 
+                    multiple 
+                    required>
+                <small style="color: #666; display: block; margin-top: 5px;">
+                    You can select multiple PDF files (Max: 16MB each)
+                </small>
+            </div>
+            
+            <button type="submit" class="btn">🚀 Analyze Resumes</button>
+        </form>
+        
+        <div class="info-box">
+            <h3>📋 Skills We Track:</h3>
+            <div class="skills-list">
+                {% for skill in skill_keywords %}
+                <span class="skill-tag">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
