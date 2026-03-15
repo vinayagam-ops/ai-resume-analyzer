@@ -1,4 +1,9 @@
-flask
-PyPDF2
-scikit-learn
-gunicorn
+flask==3.0.3
+gunicorn==22.0.0
+scikit-learn==1.5.1
+PyPDF2==3.0.1
+sentence-transformers==3.0.1
+numpy==1.26.4
+scipy==1.13.1
+torch==2.3.1
+transformers==4.41.2
